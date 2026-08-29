@@ -1281,40 +1281,7 @@ function update(dt){
   adjustScaling(dt);
   updateStatsPanel();
 }
-function updateChests(dt){
-  const p = G.player;
-  if (G.time - G.lastChestMinute >= 60) {
-    G.lastChestMinute = G.time;
-    G.chests.push({ x: p.x + (Math.random()-0.5)*600, y: p.y + (Math.random()-0.5)*600, active:true });
-  }
-  for (let c of G.chests) {
-    if (!c.active) continue;
-    if (Math.hypot(p.x - c.x, p.y - c.y) < p.r + 20) {
-      if (p.gold >= G.chestCost) {
-        p.gold -= G.chestCost;
-        G.chestCost = Math.floor(G.chestCost * 1.5);
-        c.active = false;
-        const upgrade = Math.random();
-        if (upgrade < 0.3) { p.wiseOldMan = (p.wiseOldMan||0)+1; toast('Wise Old Man mejorado'); }
-        else if (upgrade < 0.6) { p.burgir = (p.burgir||0)+1; toast('Burgir maestro'); }
-        else { p.moldyCheese = (p.moldyCheese||0)+1; toast('Queso con moho (veneno)'); }
-      }
-    }
-  }
-}
-function updateStatsPanel(){
-  const p = G.player;
-  const content = document.getElementById('stats-content');
-  if (document.getElementById('stats-panel').classList.contains('hidden')) return;
-  content.innerHTML = 
-    'Gold: $'+p.gold + '<br>' +
-    'Wise Old Man: '+(p.wiseOldMan||0) + '<br>' +
-    'Burgir: '+(p.burgir||0) + '<br>' +
-    'Moldy Cheese: '+(p.moldyCheese||0);
-}
-function toggleStatsPanel(){
-  document.getElementById('stats-panel').classList.toggle('hidden');
-}
+
 
 // ============ GAME OVER / RESET ============
 function gameOver(){
