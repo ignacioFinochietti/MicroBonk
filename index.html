@@ -116,6 +116,43 @@ button#restart:hover{background:#2c4a2c;box-shadow:0 0 18px rgba(124,252,0,.5)}
     #toggle-stats-btn:hover {
       background: #2c4a2c;
     }
+    #debug-panel {
+      position: fixed;
+      bottom: 50px;
+      left: 10px;
+      width: 260px;
+      background: rgba(20,10,15,0.92);
+      border: 1px solid #ff3d7f;
+      border-radius: 6px;
+      padding: 12px;
+      font-family: Consolas, monospace;
+      font-size: 11px;
+      color: #e8e8e8;
+      z-index: 15;
+      pointer-events: auto;
+      transition: transform 0.2s ease;
+      line-height: 1.5;
+    }
+    #debug-panel.hidden {
+      transform: translateX(-280px);
+    }
+    #toggle-debug-btn {
+      position: fixed;
+      bottom: 10px;
+      left: 10px;
+      background: #2b1c20;
+      color: #ff3d7f;
+      border: 1px solid #ff3d7f;
+      border-radius: 4px;
+      padding: 6px 12px;
+      font-family: inherit;
+      font-size: 10px;
+      cursor: pointer;
+      z-index: 16;
+    }
+    #toggle-debug-btn:hover {
+      background: #4a2c34;
+    }
 </style>
 </head>
 <body>
@@ -214,6 +251,30 @@ button#restart:hover{background:#2c4a2c;box-shadow:0 0 18px rgba(124,252,0,.5)}
 <div id="stats-panel" class="hidden" style="display:none;">
   <h3 style="color:#7CFC00; margin:0 0 10px 0; border-bottom:1px solid #7CFC00; padding-bottom:4px; text-align:center; font-size:13px; letter-spacing:2px;">ESTADÍSTICAS</h3>
   <div id="stats-content"></div>
+</div>
+<button id="toggle-debug-btn" style="display:none;" onclick="toggleDebugPanel()">[ DEBUG ]</button>
+<div id="debug-panel" class="hidden" style="display:none;">
+  <h3 style="color:#ff3d7f; margin:0 0 10px 0; border-bottom:1px solid #ff3d7f; padding-bottom:4px; text-align:center; font-size:13px; letter-spacing:2px;">TESTING HUD</h3>
+  <div style="margin-bottom:10px;">
+    <b>Multiplicador Rares (Rarity mult):</b>
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:6px; margin-top:4px;">
+      <div>Común: <input type="number" step="0.1" style="width:50px; background:#111; color:#fff; border:1px solid #444;" id="db-rar-common" value="1.0" oninput="updateRarityMult(0, this.value)"></div>
+      <div>Mejorado: <input type="number" step="0.1" style="width:50px; background:#111; color:#fff; border:1px solid #444;" id="db-rar-improved" value="1.5" oninput="updateRarityMult(1, this.value)"></div>
+      <div>Ultra: <input type="number" step="0.1" style="width:50px; background:#111; color:#fff; border:1px solid #444;" id="db-rar-ultra" value="2.2" oninput="updateRarityMult(2, this.value)"></div>
+      <div>Épico: <input type="number" step="0.1" style="width:50px; background:#111; color:#fff; border:1px solid #444;" id="db-rar-epic" value="3.5" oninput="updateRarityMult(3, this.value)"></div>
+      <div>BONK: <input type="number" step="0.1" style="width:50px; background:#111; color:#fff; border:1px solid #444;" id="db-rar-bonk" value="6.0" oninput="updateRarityMult(4, this.value)"></div>
+    </div>
+  </div>
+  <div style="margin-bottom:10px; border-top:1px solid #444; padding-top:6px;">
+    <b>Daño Base de Armas:</b>
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:6px; margin-top:4px;">
+      <div>Ráfaga: <input type="number" step="1" style="width:50px; background:#111; color:#fff; border:1px solid #444;" id="db-wp-rafaga" value="10" oninput="updateWeaponDmg('rafaga', this.value)"></div>
+      <div>Bumerán: <input type="number" step="0.5" style="width:50px; background:#111; color:#fff; border:1px solid #444;" id="db-wp-boomerang" value="7.5" oninput="updateWeaponDmg('boomerang', this.value)"></div>
+      <div>Aura: <input type="number" step="1" style="width:50px; background:#111; color:#fff; border:1px solid #444;" id="db-wp-aura" value="4" oninput="updateWeaponDmg('aura', this.value)"></div>
+      <div>Orbitador: <input type="number" step="1" style="width:50px; background:#111; color:#fff; border:1px solid #444;" id="db-wp-orbiter" value="6" oninput="updateWeaponDmg('orbiter', this.value)"></div>
+      <div>Eco: <input type="number" step="1" style="width:50px; background:#111; color:#fff; border:1px solid #444;" id="db-wp-echo" value="0" oninput="updateWeaponDmg('echo', this.value)"></div>
+    </div>
+  </div>
 </div>
 <script>
 'use strict';
@@ -348,7 +409,9 @@ function weightedRarity(){
 }
 function randomPdfKey(){ const ks=Object.keys(PDFS); return ks[(Math.random()*ks.length)|0]; }
 function describePdf(key,ri){
-  const pdf=PDFS[key], v=pdf.vals[ri];
+  const pdf=PDFS[key];
+  const vRaw = pdf.vals[ri] * RARITIES[ri].mult;
+  const v = Number(vRaw.toFixed(1));
   switch(key){
     case 'espinas':    return 'Refleja '+v+'%';
     case 'nigromante': return 'Roba '+v+'% de vida';
@@ -358,13 +421,16 @@ function describePdf(key,ri){
   }
 }
 function applyPDF(key,ri){
-  const p=G.player, v=PDFS[key].vals[ri];
+  const p=G.player, v=PDFS[key].vals[ri] * RARITIES[ri].mult;
   switch(key){
     case 'cadencia':    p.attackInterval = Math.max(0.12, p.attackInterval * (1 - v/100)); break;
     case 'dano':        p.dmg *= (1 + v/100); break;
     case 'agilidad':    p.speed *= (1 + v/100); break;
-    case 'vitalidad':   p.maxHP += v; p.hp = Math.min(p.maxHP, p.hp + v); break;
-    case 'multidisparo':p.count = Math.min(12, p.count + v); break;
+    case 'vitalidad':
+      const vVit = Math.round(v);
+      p.maxHP += vVit; p.hp = Math.min(p.maxHP, p.hp + vVit);
+      break;
+    case 'multidisparo':p.count = Math.min(12, p.count + Math.round(v)); break;
     case 'espinas':
       p.thorns = Math.min(1, p.thorns + v/100);
       if (ri>=2) p.thornsSlow = true;
@@ -376,13 +442,13 @@ function applyPDF(key,ri){
       p.frenzyDur   = Math.max(p.frenzyDur, PDFS.frenesi.dur[ri]);
       break;
     case 'penetracion':
-      p.pierce += v;
+      p.pierce += Math.round(v);
       if (ri>=4) p.pierceNoDecay = true;
       p.bounce = 0; p.bounceNoDecay = false;
       G.player.inventory = G.player.inventory.filter(function(it){ return it.key !== 'rebote'; });
       break;
     case 'rebote':
-      p.bounce += v;
+      p.bounce += Math.round(v);
       if (ri>=3) p.bounceNoDecay = true;
       p.pierce = 0; p.pierceNoDecay = false;
       G.player.inventory = G.player.inventory.filter(function(it){ return it.key !== 'penetracion'; });
@@ -762,7 +828,9 @@ function spawnGem(x,y,val){
   if (!g) return;
   g.active = true;
   g.x = x + (Math.random()-0.5)*24; g.y = y + (Math.random()-0.5)*24;
-  g.val = val; g.r = val >= 15 ? 7 : 5; g.phase = Math.random()*6;
+  g.val = val;
+  g.r = val >= 20 ? 9 : (val >= 10 ? 7 : 5.5);
+  g.phase = Math.random()*6;
   g.isCoin = false; g.isBurgir = false;
 }
 function spawnCoin(x,y,val){
@@ -854,7 +922,7 @@ function weaponRafaga(wdef, ang){
   var spread = (n-1)*0.14;
   for (var i=0;i<n;i++){
     var a = ang - spread/2 + (n>1 ? spread*i/(n-1) : 0);
-    var dmg = (p.dmg || 10) * (p.w_rafaga_mult || 1);
+    var dmg = (wdef.dmg || 10) * (p.w_rafaga_mult || 1) * (p.dmg/10);
     var isCrit = Math.random()*100 < (p.w_rafaga_crit || 0);
     if (isCrit) dmg *= 2.5;
     spawnBullet(p.x, p.y, a, dmg, false, p.pierce, p.bounce, p.pierceNoDecay || p.bounceNoDecay, isCrit);
@@ -964,7 +1032,7 @@ function weaponOrbiter(dt){
   if(!has) return;
   if(!G.orbSpheres||!G.orbSpheres.length){ G.orbSpheres=[0.8,0.8,0.8]; G.orbAngle=0; }
   G.orbAngle += dt * 4 * (p.w_orbiter_spd_mult || 1);
-  var baseDmg = 6 * (p.dmg/10) * (p.w_orbiter_mult || 1), r=80, sr=8, n=G.orbSpheres.length||3;
+  var baseDmg = (WEAPONS.orbiter.dmg || 6) * (p.dmg/10) * (p.w_orbiter_mult || 1), r=80, sr=8, n=G.orbSpheres.length||3;
   for(var j=0;j<n;j++){
     var a=G.orbAngle + (Math.PI*2/n)*j;
     var ox=p.x+Math.cos(a)*r, oy=p.y+Math.sin(a)*r;
@@ -1292,6 +1360,7 @@ function update(dt){
   spawnTick(dt);
   adjustScaling(dt);
   updateStatsPanel();
+  updateDebugPanelVisibility();
 }
 
 
@@ -1359,8 +1428,10 @@ function resetGame(){
   document.getElementById('weaponpicker').classList.add('hidden');
   document.getElementById('modepicker').classList.add('hidden');
   document.getElementById('pausemenu').classList.add('hidden');
-  document.getElementById('toggle-stats-btn').style.display = 'block';
-  document.getElementById('stats-panel').style.display = 'block';
+  document.getElementById('toggle-stats-btn').style.display = 'none';
+  document.getElementById('stats-panel').style.display = 'none';
+  document.getElementById('toggle-debug-btn').style.display = 'none';
+  document.getElementById('debug-panel').style.display = 'none';
   document.getElementById('mainmenu').classList.remove('hidden');
 }
 
@@ -1549,7 +1620,26 @@ function drawGems(){
     if (!g.active) continue;
     const x = g.x - G.camX, y = g.y - G.camY;
     if (x < -20 || y < -20 || x > G.vw+20 || y > G.vh+20) continue;
-    ctx.beginPath(); ctx.arc(x-g.r*0.25, y-g.r*0.25, g.r*0.35, 0, Math.PI*2); ctx.fill();
+    const pulse = 1 + Math.sin(G.time*5 + g.phase)*0.15;
+    if (g.isBurgir) {
+      ctx.fillStyle = '#E0A96D';
+      ctx.beginPath(); ctx.arc(x, y, g.r * pulse, 0, Math.PI*2); ctx.fill();
+      ctx.fillStyle = '#4CAF50';
+      ctx.fillRect(x - g.r*pulse, y - 2, g.r*pulse*2, 2);
+      ctx.fillStyle = '#8B4513';
+      ctx.fillRect(x - g.r*pulse, y, g.r*pulse*2, 2);
+    } else if (g.isCoin) {
+      ctx.fillStyle = '#FFD700';
+      ctx.beginPath(); ctx.arc(x, y, g.r * pulse, 0, Math.PI*2); ctx.fill();
+      ctx.fillStyle = '#111';
+      ctx.font = 'bold 8px "Consolas", monospace';
+      ctx.fillText('$', x, y + 0.5);
+    } else {
+      ctx.fillStyle = g.val >= 20 ? '#FF3D7F' : (g.val >= 10 ? '#00E676' : '#00E5FF');
+      ctx.beginPath();
+      ctx.arc(x, y, g.r * pulse, 0, Math.PI*2);
+      ctx.fill();
+    }
   }
 }
 function drawPdfPickups(){
@@ -1823,6 +1913,8 @@ function startGameWithWeapon(){
   document.getElementById('pausemenu').classList.add('hidden');
   document.getElementById('toggle-stats-btn').style.display = 'block';
   document.getElementById('stats-panel').style.display = 'block';
+  document.getElementById('toggle-debug-btn').style.display = 'block';
+  document.getElementById('debug-panel').style.display = 'block';
   if (G.mode === 'extreme') {
     G.pendingLevels = 4;
     openLevelUp();
@@ -2085,6 +2177,8 @@ function showMainMenu(){
   document.getElementById('pausemenu').classList.add('hidden');
   document.getElementById('toggle-stats-btn').style.display = 'none';
   document.getElementById('stats-panel').style.display = 'none';
+  document.getElementById('toggle-debug-btn').style.display = 'none';
+  document.getElementById('debug-panel').style.display = 'none';
   document.getElementById('mainmenu').classList.remove('hidden');
   G.weaponSelect = true;
 }
@@ -2101,6 +2195,33 @@ function togglePause(){
 function toggleStatsPanel() {
   const panel = document.getElementById('stats-panel');
   panel.classList.toggle('hidden');
+}
+function toggleDebugPanel() {
+  const panel = document.getElementById('debug-panel');
+  panel.classList.toggle('hidden');
+}
+function updateRarityMult(index, val) {
+  const num = parseFloat(val);
+  if (!isNaN(num)) {
+    RARITIES[index].mult = num;
+  }
+}
+function updateWeaponDmg(weaponId, val) {
+  const num = parseFloat(val);
+  if (!isNaN(num)) {
+    WEAPONS[weaponId].dmg = num;
+  }
+}
+function updateDebugPanelVisibility() {
+  const btn = document.getElementById('toggle-debug-btn');
+  const panel = document.getElementById('debug-panel');
+  if (G.weaponSelect || G.over) {
+    btn.style.display = 'none';
+    panel.style.display = 'none';
+    return;
+  }
+  btn.style.display = 'block';
+  panel.style.display = panel.classList.contains('hidden') ? 'none' : 'block';
 }
 function updateStatsPanel() {
   const btn = document.getElementById('toggle-stats-btn');
