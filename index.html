@@ -1208,7 +1208,19 @@ function updateGems(dt){
     } else {
       g.y += Math.sin(G.time*3 + g.phase)*8*dt;
     }
-    if (d < p.r + 6){ g.active = false; gainXP(g.val); if (g.isCoin) G.player.gold = (G.player.gold||0) + g.val; if (g.isBurgir) G.player.hp = Math.min(G.player.maxHP, G.player.hp + 25); }
+    if (d < p.r + 6){
+      g.active = false;
+      if (g.isBurgir) {
+        p.hp = Math.min(p.maxHP, p.hp + 10);
+        toast('+10 HP (Burgir)');
+        burst(p.x, p.y, '#E0A96D', 8, 1);
+      } else if (g.isCoin) {
+        p.gold = (p.gold || 0) + g.val;
+        toast('+' + g.val + ' de oro');
+      } else {
+        gainXP(g.val);
+      }
+    }
   }
 }
 function updatePdfPickups(dt){
