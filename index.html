@@ -204,6 +204,9 @@ button#restart:hover{background:#2c4a2c;box-shadow:0 0 18px rgba(124,252,0,.5)}
     @media (hover: none) and (pointer: coarse), (max-width: 1024px) {
       .is-touch #mobile-joystick { display: block; }
       .is-touch #mobile-pause-btn { display: flex; }
+      .is-touch #toggle-stats-btn { display: none !important; }
+      .is-touch #stats-panel { display: none !important; }
+      .is-touch #toast { top: 88px; }
       #cards { flex-wrap: wrap; justify-content: center; max-height: 70vh; overflow-y: auto; }
       #wcards { flex-wrap: wrap; justify-content: center; max-height: 65vh; overflow-y: auto; }
       .card { width: 150px; padding: 12px 8px; }
@@ -1857,6 +1860,25 @@ function drawInventory(){
     else { if (it.ri > u.ri) u.ri = it.ri; u.n++; }
   }
   ctx.font = '9px "Consolas", monospace';
+  if (isTouchDevice()) {
+    let ix = 10;
+    const iy = 82;
+    for (let i = 0; i < uniq.length; i++){
+      const u = uniq[i], r = RARITIES[u.ri];
+      ctx.fillStyle = 'rgba(0,0,0,0.55)';
+      ctx.fillRect(ix, iy, 22, 26);
+      ctx.strokeStyle = r.color; ctx.lineWidth = 1.5;
+      ctx.strokeRect(ix, iy, 22, 26);
+      ctx.fillStyle = r.color;
+      ctx.fillRect(ix+4, iy+4, 14, 2);
+      ctx.fillRect(ix+4, iy+8, 14, 2);
+      ctx.fillRect(ix+4, iy+12, 14, 2);
+      ctx.fillStyle = '#fff';
+      ctx.fillText('x'+u.n, ix+6, iy+22);
+      ix += 26;
+    }
+    return;
+  }
   ctx.textAlign = 'right';
   let x = G.vw - 10;
   for (let i = uniq.length-1; i >= 0; i--){
