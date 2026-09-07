@@ -155,14 +155,15 @@ button#restart:hover{background:#2c4a2c;box-shadow:0 0 18px rgba(124,252,0,.5)}
     }
     #mobile-joystick {
       position: fixed;
-      bottom: 36px;
-      left: 36px;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
       width: 124px;
       height: 124px;
       border-radius: 50%;
-      background: rgba(15, 20, 30, 0.6);
-      border: 2px solid rgba(124, 252, 0, 0.45);
-      box-shadow: 0 0 16px rgba(124, 252, 0, 0.2);
+      background: rgba(15, 20, 30, 0.65);
+      border: 2px solid rgba(124, 252, 0, 0.5);
+      box-shadow: 0 0 16px rgba(124, 252, 0, 0.25);
       z-index: 15;
       touch-action: none;
       user-select: none;
@@ -1994,6 +1995,7 @@ function loop(ts){
   lastTs = ts;
   if (dt > 0.05) dt = 0.05;
   fpsEMA = fpsEMA*0.92 + (1/Math.max(dt, 1/240))*0.08;
+  updateJoystickVisibility();
   if (!G.weaponSelect && !G.over && !G.levelUp && !G.paused) update(dt);
   else if (G.shake > 0 && !G.weaponSelect && !G.paused) G.shake = Math.max(0, G.shake - dt*30);
   draw();
@@ -2014,7 +2016,7 @@ window.addEventListener('keyup', function(e){ keys[e.code] = false; });
 
 // ============ JOYSTICK ANALÓGICO MOBILE ============
 function isTouchDevice() {
-  return ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || window.innerWidth <= 1024;
+  return ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || window.innerWidth <= 1024 || (window.matchMedia && window.matchMedia('(pointer: coarse)').matches);
 }
 if (isTouchDevice()) {
   document.body.classList.add('is-touch');
@@ -2025,7 +2027,7 @@ function updateJoystickVisibility() {
   const pauseBtn = document.getElementById('mobile-pause-btn');
   if (!joy) return;
   const isPlaying = !G.weaponSelect && !G.over && !G.levelUp && !G.paused;
-  if (isTouchDevice() && isPlaying) {
+  if (isPlaying && isTouchDevice()) {
     joy.classList.remove('hidden');
     joy.style.display = 'block';
     if (pauseBtn) {
@@ -2057,12 +2059,12 @@ function setupMobileJoystick() {
     stickEl.style.transform = 'translate3d(0px, 0px, 0px)';
   }
 
-  function handleTouch(touch) {
+  function handlePointer(clientX, clientY) {
     const rect = joyEl.getBoundingClientRect();
     const centerX = rect.left + rect.width / 2;
     const centerY = rect.top + rect.height / 2;
-    let dx = touch.clientX - centerX;
-    let dy = touch.clientY - centerY;
+    let dx = clientX - centerX;
+    let dy = clientY - centerY;
     const dist = Math.hypot(dx, dy);
     const maxR = (G.joystick && G.joystick.maxR) || 40;
     if (dist > maxR && dist > 0) {
@@ -2082,7 +2084,7 @@ function setupMobileJoystick() {
     if (!G.joystick || G.joystick.touchId !== null) return;
     const t = e.changedTouches[0];
     G.joystick.touchId = t.identifier;
-    handleTouch(t);
+    handlePointer(t.clientX, t.clientY);
   }, { passive: false });
 
   window.addEventListener('touchmove', function(e) {
@@ -2090,7 +2092,7 @@ function setupMobileJoystick() {
     for (let i = 0; i < e.changedTouches.length; i++) {
       if (e.changedTouches[i].identifier === G.joystick.touchId) {
         e.preventDefault();
-        handleTouch(e.changedTouches[i]);
+        handlePointer(e.changedTouches[i].clientX, e.changedTouches[i].clientY);
         break;
       }
     }
@@ -2107,6 +2109,23 @@ function setupMobileJoystick() {
   });
 
   window.addEventListener('touchcancel', resetStick);
+
+  // Mouse fallback for desktop testing
+  let isMouseDown = false;
+  joyEl.addEventListener('mousedown', function(e) {
+    isMouseDown = true;
+    handlePointer(e.clientX, e.clientY);
+  });
+  window.addEventListener('mousemove', function(e) {
+    if (!isMouseDown) return;
+    handlePointer(e.clientX, e.clientY);
+  });
+  window.addEventListener('mouseup', function() {
+    if (isMouseDown) {
+      isMouseDown = false;
+      resetStick();
+    }
+  });
 }
 
 // ============ INIT ============
