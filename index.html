@@ -153,10 +153,67 @@ button#restart:hover{background:#2c4a2c;box-shadow:0 0 18px rgba(124,252,0,.5)}
     #toggle-debug-btn:hover {
       background: #4a2c34;
     }
+    #mobile-joystick {
+      position: fixed;
+      bottom: 36px;
+      left: 36px;
+      width: 124px;
+      height: 124px;
+      border-radius: 50%;
+      background: rgba(15, 20, 30, 0.6);
+      border: 2px solid rgba(124, 252, 0, 0.45);
+      box-shadow: 0 0 16px rgba(124, 252, 0, 0.2);
+      z-index: 15;
+      touch-action: none;
+      user-select: none;
+      display: none;
+    }
+    #joystick-stick {
+      position: absolute;
+      top: 38px;
+      left: 38px;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(124, 252, 0, 0.95) 0%, rgba(35, 150, 5, 0.8) 100%);
+      border: 2px solid #7CFC00;
+      box-shadow: 0 0 12px rgba(124, 252, 0, 0.7);
+      pointer-events: none;
+      transform: translate3d(0, 0, 0);
+      will-change: transform;
+    }
+    #mobile-pause-btn {
+      position: fixed;
+      top: 14px;
+      right: 14px;
+      width: 42px;
+      height: 42px;
+      border-radius: 8px;
+      background: rgba(15, 20, 30, 0.8);
+      border: 1px solid #7CFC00;
+      color: #7CFC00;
+      font-size: 18px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 15;
+      user-select: none;
+    }
+    @media (hover: none) and (pointer: coarse), (max-width: 1024px) {
+      .is-touch #mobile-joystick { display: block; }
+      .is-touch #mobile-pause-btn { display: flex; }
+      #cards { flex-wrap: wrap; justify-content: center; max-height: 70vh; overflow-y: auto; }
+      #wcards { flex-wrap: wrap; justify-content: center; max-height: 65vh; overflow-y: auto; }
+      .card { width: 150px; padding: 12px 8px; }
+      .card .icon { font-size: 32px; margin: 6px 0; }
+    }
 </style>
 </head>
 <body>
 <canvas id="game"></canvas>
+<div id="mobile-joystick" class="hidden"><div id="joystick-stick"></div></div>
+<button id="mobile-pause-btn" class="hidden" onclick="togglePause()">⏸</button>
 <div id="toast"></div>
 <div id="mainmenu" class="overlay">
   <h1 style="font-size:52px; color:#7CFC00; text-shadow:0 0 20px rgba(124,252,0,0.8); margin-bottom:30px; letter-spacing:6px;">MICROBONK</h1>
@@ -454,6 +511,7 @@ const G = { vw:0, vh:0, camX:0, camY:0, time:0, level:1, kills:0, over:false, le
             pendingLevels:0, warnings:[], portal:{ active:false, x:0, y:0, timer:0 },
             noEnemyLimit:false, swarmWarningTimer:0, lastMinute:0, paused:false,
             recentKillsWindow:0, recentKillTimer:0, killRate:0, killSpurtMult:1.0,
+            joystick: { active:false, touchId:null, vx:0, vy:0, maxR:40 },
             chests:[], chestCost:25, chestsOpened:0, chestDifficultyMult:1.0, lastChestMinute:0, difficultyWarningTimer:0,
             player:{ weapons:[], echoCount:0, orbSpheres:[], orbAngle:0, gold:0, moldyCheese:0, burgir:0, wiseOldMan:0 }, bullets:{}, enemies:{}, gems:{}, pdfs:{}, particles:{}, dmgTexts:{} };
 
@@ -956,10 +1014,15 @@ function updatePlayer(dt){
   if (keys['KeyS'] || keys['ArrowDown']) iy += 1;
   if (keys['KeyA'] || keys['ArrowLeft']) ix -= 1;
   if (keys['KeyD'] || keys['ArrowRight']) ix += 1;
+  if (!ix && !iy && G.joystick && G.joystick.active) {
+    ix = G.joystick.vx;
+    iy = G.joystick.vy;
+  }
   if (ix || iy){
-    const len = Math.hypot(ix,iy); ix/=len; iy/=len;
-    p.x += ix*p.speed*dt;
-    p.y += iy*p.speed*dt;
+    const len = Math.hypot(ix,iy);
+    const factor = Math.min(1.0, len);
+    p.x += (ix/len) * p.speed * factor * dt;
+    p.y += (iy/len) * p.speed * factor * dt;
   }
   p.x = clamp(p.x, p.r, WORLD.w-p.r);
   p.y = clamp(p.y, p.r, WORLD.h-p.r);
@@ -1949,6 +2012,103 @@ window.addEventListener('keydown', function(e){
 });
 window.addEventListener('keyup', function(e){ keys[e.code] = false; });
 
+// ============ JOYSTICK ANALÓGICO MOBILE ============
+function isTouchDevice() {
+  return ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || window.innerWidth <= 1024;
+}
+if (isTouchDevice()) {
+  document.body.classList.add('is-touch');
+}
+
+function updateJoystickVisibility() {
+  const joy = document.getElementById('mobile-joystick');
+  const pauseBtn = document.getElementById('mobile-pause-btn');
+  if (!joy) return;
+  const isPlaying = !G.weaponSelect && !G.over && !G.levelUp && !G.paused;
+  if (isTouchDevice() && isPlaying) {
+    joy.classList.remove('hidden');
+    joy.style.display = 'block';
+    if (pauseBtn) {
+      pauseBtn.classList.remove('hidden');
+      pauseBtn.style.display = 'flex';
+    }
+  } else {
+    joy.classList.add('hidden');
+    joy.style.display = 'none';
+    if (pauseBtn) {
+      pauseBtn.classList.add('hidden');
+      pauseBtn.style.display = 'none';
+    }
+  }
+}
+
+function setupMobileJoystick() {
+  const joyEl = document.getElementById('mobile-joystick');
+  const stickEl = document.getElementById('joystick-stick');
+  if (!joyEl || !stickEl) return;
+
+  function resetStick() {
+    if (G.joystick) {
+      G.joystick.active = false;
+      G.joystick.touchId = null;
+      G.joystick.vx = 0;
+      G.joystick.vy = 0;
+    }
+    stickEl.style.transform = 'translate3d(0px, 0px, 0px)';
+  }
+
+  function handleTouch(touch) {
+    const rect = joyEl.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    let dx = touch.clientX - centerX;
+    let dy = touch.clientY - centerY;
+    const dist = Math.hypot(dx, dy);
+    const maxR = (G.joystick && G.joystick.maxR) || 40;
+    if (dist > maxR && dist > 0) {
+      dx = (dx / dist) * maxR;
+      dy = (dy / dist) * maxR;
+    }
+    stickEl.style.transform = 'translate3d(' + dx.toFixed(1) + 'px, ' + dy.toFixed(1) + 'px, 0)';
+    if (G.joystick) {
+      G.joystick.active = true;
+      G.joystick.vx = dx / maxR;
+      G.joystick.vy = dy / maxR;
+    }
+  }
+
+  joyEl.addEventListener('touchstart', function(e) {
+    e.preventDefault();
+    if (!G.joystick || G.joystick.touchId !== null) return;
+    const t = e.changedTouches[0];
+    G.joystick.touchId = t.identifier;
+    handleTouch(t);
+  }, { passive: false });
+
+  window.addEventListener('touchmove', function(e) {
+    if (!G.joystick || !G.joystick.active || G.joystick.touchId === null) return;
+    for (let i = 0; i < e.changedTouches.length; i++) {
+      if (e.changedTouches[i].identifier === G.joystick.touchId) {
+        e.preventDefault();
+        handleTouch(e.changedTouches[i]);
+        break;
+      }
+    }
+  }, { passive: false });
+
+  window.addEventListener('touchend', function(e) {
+    if (!G.joystick || G.joystick.touchId === null) return;
+    for (let i = 0; i < e.changedTouches.length; i++) {
+      if (e.changedTouches[i].identifier === G.joystick.touchId) {
+        resetStick();
+        break;
+      }
+    }
+  });
+
+  window.addEventListener('touchcancel', resetStick);
+}
+
 // ============ INIT ============
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
@@ -2448,6 +2608,8 @@ function updateStatsPanel() {
 }
 makePools();
 resize();
+setupMobileJoystick();
+updateJoystickVisibility();
 G.weaponSelect = true;
 buildWeaponPicker();
 selectWeapon(Object.keys(WEAPONS)[0]);
