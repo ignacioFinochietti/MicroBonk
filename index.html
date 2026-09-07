@@ -2058,8 +2058,8 @@ function startGameWithWeapon(){
   document.getElementById('pausemenu').classList.add('hidden');
   document.getElementById('toggle-stats-btn').style.display = 'block';
   document.getElementById('stats-panel').style.display = 'block';
-  document.getElementById('toggle-debug-btn').style.display = 'block';
-  document.getElementById('debug-panel').style.display = 'block';
+  document.getElementById('toggle-debug-btn').style.display = 'none';
+  document.getElementById('debug-panel').style.display = 'none';
   if (G.mode === 'extreme') {
     G.pendingLevels = 4;
     openLevelUp();
@@ -2395,13 +2395,8 @@ function updateWeaponDmg(weaponId, val) {
 function updateDebugPanelVisibility() {
   const btn = document.getElementById('toggle-debug-btn');
   const panel = document.getElementById('debug-panel');
-  if (G.weaponSelect || G.over) {
-    btn.style.display = 'none';
-    panel.style.display = 'none';
-    return;
-  }
-  btn.style.display = 'block';
-  panel.style.display = panel.classList.contains('hidden') ? 'none' : 'block';
+  btn.style.display = 'none';
+  panel.style.display = 'none';
 }
 function updateStatsPanel() {
   const btn = document.getElementById('toggle-stats-btn');
