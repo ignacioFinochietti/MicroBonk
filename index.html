@@ -161,37 +161,25 @@ button#restart:hover{background:#2c4a2c;box-shadow:0 0 18px rgba(124,252,0,.5)}
 <div id="mainmenu" class="overlay">
   <h1 style="font-size:52px; color:#7CFC00; text-shadow:0 0 20px rgba(124,252,0,0.8); margin-bottom:30px; letter-spacing:6px;">MICROBONK</h1>
   
-  <div id="menu-buttons" style="display:flex; flex-direction:column; gap:16px; width:260px;">
+  <div id="menu-buttons" style="display:flex; flex-direction:column; gap:12px; width:260px;">
     <button class="menu-btn" onclick="showModePicker()">JUGAR</button>
-    <button class="menu-btn" onclick="showUnlocks()">DESBLOQUEOS</button>
+    <button class="menu-btn" onclick="showUnlocks()">DESBLOQUEOS Y TIENDA</button>
     <button class="menu-btn" onclick="showScores()">TABLAS</button>
-    <div style="margin-top: 10px; font-size: 11px; color:#aaa; display:flex; align-items:center; justify-content:center; gap:8px;">
+    <button class="menu-btn" onclick="showSaveCodePrompt()">🔑 CÓDIGO DE GUARDADO</button>
+    <div style="margin-top: 6px; font-size: 11px; color:#aaa; display:flex; align-items:center; justify-content:center; gap:8px;">
       <input type="checkbox" id="no-limit-check" style="cursor:pointer; accent-color:#7CFC00;">
       <label for="no-limit-check" style="cursor:pointer; user-select:none;">Modo Sin Límite de Enemigos</label>
     </div>
   </div>
   
-  <div id="unlocks-panel" class="hidden" style="text-align:center; width: 340px;">
-    <h3 style="color:#7CFC00; margin-bottom:16px; letter-spacing: 2px;">DESBLOQUEOS</h3>
-    <p style="color:#aaa; font-size:11px; margin-bottom:16px;">Completa logros para desbloquear contenido especial.</p>
-    <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:12px; margin-bottom:20px;">
-      <div style="background:rgba(255,255,255,0.05); padding:10px; border-radius:6px; border: 1px solid #333;">
-        <div style="font-size:24px;">🪃</div>
-        <div style="font-size:10px; color:#aaa; margin-top: 4px;">Bumerán</div>
-        <div style="font-size:9px; color:#7CFC00; margin-top: 2px;">Inicial</div>
-      </div>
-      <div style="background:rgba(255,255,255,0.05); padding:10px; border-radius:6px; border: 1px solid #333;">
-        <div style="font-size:24px;">🛸</div>
-        <div style="font-size:10px; color:#aaa; margin-top: 4px;">Orbitador</div>
-        <div style="font-size:9px; color:#7CFC00; margin-top: 2px;">Inicial</div>
-      </div>
-      <div style="background:rgba(255,255,255,0.05); padding:10px; border-radius:6px; border: 1px solid #333;">
-        <div style="font-size:24px; opacity: 0.3;">🔒</div>
-        <div style="font-size:10px; color:#666; margin-top: 4px;">Hiper-Láser</div>
-        <div style="font-size:9px; color:#ffd740; margin-top: 2px;">Próximamente</div>
-      </div>
+  <div id="unlocks-panel" class="hidden" style="text-align:center; width: 360px;">
+    <h3 style="color:#7CFC00; margin-bottom:8px; letter-spacing: 2px;">TIENDA Y ARMAS</h3>
+    <div id="unlocks-coins-display" style="color:#ffd740; font-size:13px; font-weight:bold; margin-bottom:12px;">Monedas acumuladas: 🪙 0</div>
+    <div id="unlocks-list" style="display:grid; grid-template-columns: repeat(3, 1fr); gap:10px; margin-bottom:16px; max-height:200px; overflow-y:auto;"></div>
+    <div style="display:flex; gap:10px; justify-center;">
+      <button class="menu-btn" style="flex:1; font-size:11px;" onclick="showSaveCodePrompt()">🔑 CÓDIGO</button>
+      <button class="menu-btn" style="flex:1; font-size:11px;" onclick="hidePanels()">VOLVER</button>
     </div>
-    <button class="menu-btn" onclick="hidePanels()">VOLVER</button>
   </div>
   
   <div id="scores-panel" class="hidden" style="text-align:center; width: 340px;">
@@ -220,10 +208,14 @@ button#restart:hover{background:#2c4a2c;box-shadow:0 0 18px rgba(124,252,0,.5)}
   <button class="menu-btn" style="margin-top:20px; width:280px;" onclick="backToMenuFromMode()">VOLVER</button>
 </div>
 <div id="weaponpicker" class="overlay hidden">
-  <h2 style="color:#7CFC00;font-size:24px;letter-spacing:3px;margin-bottom:8px;">ELIGE TU ARMA</h2>
-  <p style="color:#aaa;font-size:12px;margin-bottom:18px;">haz click en una carta y presiona INICIAR</p>
+  <h2 style="color:#7CFC00;font-size:24px;letter-spacing:3px;margin-bottom:4px;">ELIGE O COMPRA TU ARMA</h2>
+  <div id="picker-coins-display" style="color:#ffd740;font-size:14px;font-weight:bold;margin-bottom:12px;">MONEDAS DE PLATA: 🪙 0</div>
+  <p style="color:#aaa;font-size:12px;margin-bottom:16px;">haz click en una carta desbloqueada para iniciar o usa tus monedas para comprar armas</p>
   <div id="wcards"></div>
-  <button id="startGame" style="margin-top:20px;padding:12px 36px;font-size:16px;background:#1c2b1c;color:#7CFC00;border:2px solid #7CFC00;border-radius:8px;cursor:pointer;font-family:inherit;letter-spacing:3px;">INICIAR</button>
+  <div style="display:flex; gap:16px; margin-top:20px;">
+    <button id="startGame" style="padding:12px 36px;font-size:16px;background:#1c2b1c;color:#7CFC00;border:2px solid #7CFC00;border-radius:8px;cursor:pointer;font-family:inherit;letter-spacing:3px;">INICIAR</button>
+    <button class="menu-btn" style="width:140px; padding:12px;" onclick="showMainMenu()">MENÚ</button>
+  </div>
 </div>
 <div id="levelup" class="overlay hidden">
   <h2>SUBISTE DE NIVEL</h2>
@@ -353,6 +345,99 @@ const WEAPONS = {
   orbiter:  { id:'orbiter',  name:'Orbitador', icon:'', desc:'3 esferas giratorias que golpean por contacto.',                      interval:0,   dmg:6,  count:0, maxCount:0  },
   echo:     { id:'echo',     name:'Impacto con Eco', icon:'',desc:'Un disparo lento. Daño crece cada vez. Acumulador persistente.', interval:1.2, dmg:0,  count:1, maxCount:1  },
 };
+
+// ============ ECONOMIA Y PERSISTENCIA (TIENDA Y GUARDADO CON CONTRASEÑA) ============
+const WEAPON_PRICES = {
+  rafaga: 0,
+  aura: 0,
+  boomerang: 50,
+  orbiter: 100,
+  echo: 200
+};
+
+function getGlobalCoins(){
+  try {
+    return parseInt(localStorage.getItem('microbonk_coins') || '0', 10) || 0;
+  } catch(e){ return 0; }
+}
+function setGlobalCoins(c){
+  try {
+    localStorage.setItem('microbonk_coins', Math.max(0, c).toString());
+  } catch(e){}
+}
+function addGlobalCoins(amount){
+  if (!amount || amount <= 0) return;
+  setGlobalCoins(getGlobalCoins() + amount);
+}
+
+function getUnlockedWeapons(){
+  try {
+    const raw = localStorage.getItem('microbonk_unlocked_weapons');
+    if (raw) {
+      const arr = JSON.parse(raw);
+      if (Array.isArray(arr) && arr.length > 0) return arr;
+    }
+  } catch(e){}
+  return ['rafaga', 'aura'];
+}
+
+function isWeaponUnlocked(wid){
+  if (wid === 'rafaga' || wid === 'aura') return true;
+  const unlocked = getUnlockedWeapons();
+  return unlocked.indexOf(wid) !== -1;
+}
+
+function unlockWeapon(wid){
+  const unlocked = getUnlockedWeapons();
+  if (unlocked.indexOf(wid) === -1){
+    unlocked.push(wid);
+    try {
+      localStorage.setItem('microbonk_unlocked_weapons', JSON.stringify(unlocked));
+    } catch(e){}
+  }
+}
+
+function generateSaveCode(){
+  const coins = getGlobalCoins();
+  const unlocked = getUnlockedWeapons();
+  let mask = 0;
+  const ids = ['rafaga', 'aura', 'boomerang', 'orbiter', 'echo'];
+  for (let i = 0; i < ids.length; i++){
+    if (unlocked.indexOf(ids[i]) !== -1) mask |= (1 << i);
+  }
+  const checksum = ((coins * 31 + mask * 17 + 42) % 4095).toString(16).toUpperCase().padStart(3, '0');
+  const coinsHex = coins.toString(36).toUpperCase();
+  const maskHex = mask.toString(16).toUpperCase();
+  return 'MB-' + coinsHex + '-' + maskHex + '-' + checksum;
+}
+
+function loadSaveCode(codeStr){
+  if (!codeStr) return false;
+  const str = codeStr.trim().toUpperCase();
+  const parts = str.split('-');
+  if (parts.length !== 4 || parts[0] !== 'MB') return false;
+  
+  const coins = parseInt(parts[1], 36);
+  const mask = parseInt(parts[2], 16);
+  const checksum = parts[3];
+  
+  if (isNaN(coins) || isNaN(mask)) return false;
+  const expectedCheck = ((coins * 31 + mask * 17 + 42) % 4095).toString(16).toUpperCase().padStart(3, '0');
+  if (checksum !== expectedCheck) return false;
+  
+  setGlobalCoins(coins);
+  const ids = ['rafaga', 'aura', 'boomerang', 'orbiter', 'echo'];
+  const newUnlocked = [];
+  for (let i = 0; i < ids.length; i++){
+    if ((mask & (1 << i)) !== 0) newUnlocked.push(ids[i]);
+  }
+  if (newUnlocked.indexOf('rafaga') === -1) newUnlocked.push('rafaga');
+  if (newUnlocked.indexOf('aura') === -1) newUnlocked.push('aura');
+  try {
+    localStorage.setItem('microbonk_unlocked_weapons', JSON.stringify(newUnlocked));
+  } catch(e){}
+  return true;
+}
 
 // ============ UTIL ============
 function clamp(v,a,b){ return v<a?a:(v>b?b:v); }
@@ -515,6 +600,7 @@ function openLevelUp(){
   G.mode = 1;
   if (G.player.weapons.length < 2){
     var wopts = Object.keys(WEAPONS).filter(function(k){
+      if (!isWeaponUnlocked(k)) return false;
       for (var j=0;j<G.player.weapons.length;j++){ if (G.player.weapons[j].id===k) return false; }
       return true;
     });
@@ -781,7 +867,7 @@ function killEnemy(e){
     }
   } else if (e.behavior === 'bonksup') {
     spawnCoin(e.x, e.y, 3);
-  } else if (Math.random() < 0.15) {
+  } else if (Math.random() < 0.05) {
     spawnCoin(e.x, e.y, 1);
   }
   
@@ -1368,10 +1454,14 @@ function update(dt){
 function gameOver(){
   if (G.over) return;
   G.over = true;
+  if (G.player.gold > 0) {
+    addGlobalCoins(G.player.gold);
+  }
   document.getElementById('stats').innerHTML =
     '<div>Tiempo: '+fmtTime(G.time)+'</div>' +
     '<div>Nivel alcanzado: '+G.level+'</div>' +
     '<div>Enemigos eliminados: '+G.kills+'</div>' +
+    '<div>Monedas recolectadas: 🪙 '+(G.player.gold || 0)+' (Total: 🪙 '+getGlobalCoins()+')</div>' +
     '<div>PDFs equipados: '+G.player.inventory.length+'</div>';
   document.getElementById('gameover').classList.remove('hidden');
   try {
@@ -1845,28 +1935,52 @@ window.addEventListener('resize', resize);
 function buildWeaponPicker(){
   var wrap = document.getElementById('wcards');
   wrap.innerHTML = '';
+  var coinsEl = document.getElementById('picker-coins-display');
+  if (coinsEl) {
+    coinsEl.textContent = 'MONEDAS DE PLATA: 🪙 ' + getGlobalCoins();
+  }
   var wkeys = Object.keys(WEAPONS);
   for (var i=0;i<wkeys.length;i++){
     (function(idx){
-      var w = WEAPONS[wkeys[idx]];
+      var wid = wkeys[idx];
+      var w = WEAPONS[wid];
+      var unlocked = isWeaponUnlocked(wid);
+      var price = WEAPON_PRICES[wid] || 0;
       var card = document.createElement('div');
       card.className = 'card';
-      card.style.borderColor = '#555';
-      card.style.setProperty('--glow', '#7CFC00');
+      card.style.borderColor = unlocked ? '#555' : '#333';
+      card.style.setProperty('--glow', unlocked ? '#7CFC00' : '#ff5252');
       var icon = w.id==='rafaga'?'⚡':w.id==='boomerang'?'🪃':w.id==='aura'?'🔥':w.id==='orbiter'?'🛸':'💢';
+      var statusColor = unlocked ? '#aaa' : '#ffd740';
       card.innerHTML =
-        '<div class="rarity" style="color:#aaa">SELECCIONAR</div>' +
-        '<div class="icon">'+icon+'</div>' +
+        '<div class="rarity" style="color:'+statusColor+'">'+(unlocked?'DESBLOQUEADA':('🔒 PRECIO: 🪙 '+price))+'</div>' +
+        '<div class="icon" style="'+(unlocked?'':'opacity:0.4;filter:grayscale(1);')+'">'+icon+'</div>' +
         '<div class="pname">'+w.name+'</div>' +
         '<div class="pdesc">'+w.desc+'</div>' +
-        '<div class="pval">Daño: '+(w.dmg||'varia')+' | Cad: '+(w.interval?w.interval.toFixed(2)+'s':'pasivo')+'</div>';
-      card.onclick = function(){ selectWeapon(wkeys[idx]); };
+        '<div class="pval">'+(unlocked ? ('Daño: '+(w.dmg||'varia')+' | Cad: '+(w.interval?w.interval.toFixed(2)+'s':'pasivo')) : ('Comprar por 🪙 ' + price))+'</div>';
+      card.onclick = function(){
+        if (!unlocked) {
+          var currentCoins = getGlobalCoins();
+          if (currentCoins >= price) {
+            setGlobalCoins(currentCoins - price);
+            unlockWeapon(wid);
+            toast('¡Desbloqueaste ' + w.name + '!');
+            buildWeaponPicker();
+            selectWeapon(wid);
+          } else {
+            toast('Monedas insuficientes (Tenés 🪙 ' + currentCoins + ' / Necesitás 🪙 ' + price + ')');
+          }
+        } else {
+          selectWeapon(wid);
+        }
+      };
       wrap.appendChild(card);
     })(i);
   }
   G._selectedWeapon = null;
 }
 function selectWeapon(wid){
+  if (!isWeaponUnlocked(wid)) return;
   G._selectedWeapon = wid;
   var cards = document.getElementById('wcards').children;
   for(var i=0;i<cards.length;i++) cards[i].classList.remove('selected');
@@ -2134,9 +2248,44 @@ function backToMenuFromMode(){
   document.getElementById('modepicker').classList.add('hidden');
   document.getElementById('mainmenu').classList.remove('hidden');
 }
+function updateUnlocksPanel(){
+  const coinsDisplay = document.getElementById('unlocks-coins-display');
+  if (coinsDisplay) coinsDisplay.textContent = 'Monedas acumuladas: 🪙 ' + getGlobalCoins();
+  const list = document.getElementById('unlocks-list');
+  if (!list) return;
+  list.innerHTML = '';
+  const wkeys = Object.keys(WEAPONS);
+  for (var i=0; i<wkeys.length; i++){
+    var wid = wkeys[i];
+    var w = WEAPONS[wid];
+    var unlocked = isWeaponUnlocked(wid);
+    var price = WEAPON_PRICES[wid] || 0;
+    var icon = w.id==='rafaga'?'⚡':w.id==='boomerang'?'🪃':w.id==='aura'?'🔥':w.id==='orbiter'?'🛸':'💢';
+    var div = document.createElement('div');
+    div.style.cssText = 'background:rgba(255,255,255,0.05); padding:8px; border-radius:6px; border:1px solid '+(unlocked?'#7CFC00':'#444')+'; text-align:center;';
+    div.innerHTML =
+      '<div style="font-size:20px;">' + icon + '</div>' +
+      '<div style="font-size:10px; color:#fff; font-weight:bold; margin-top:2px;">' + w.name + '</div>' +
+      '<div style="font-size:9px; color:'+(unlocked?'#7CFC00':'#ffd740')+'; margin-top:2px;">' + (unlocked?'DESBLOQUEADA':('🪙 '+price)) + '</div>';
+    list.appendChild(div);
+  }
+}
 function showUnlocks(){
+  updateUnlocksPanel();
   document.getElementById('menu-buttons').classList.add('hidden');
   document.getElementById('unlocks-panel').classList.remove('hidden');
+}
+function showSaveCodePrompt(){
+  const code = generateSaveCode();
+  const input = prompt("Tu Código de Guardado actual es:\n" + code + "\n\n(Codifica tus 🪙 " + getGlobalCoins() + " monedas y armas desbloqueadas)\n\nPara restaurar progreso, ingresá un código válido acá:", code);
+  if (input !== null && input.trim() !== "" && input.trim().toUpperCase() !== code) {
+    if (loadSaveCode(input)) {
+      toast("¡Código cargado con éxito! Monedas y armas actualizadas.");
+      updateUnlocksPanel();
+    } else {
+      toast("Código inválido o checksum incorrecto.");
+    }
+  }
 }
 function hidePanels(){
   document.getElementById('unlocks-panel').classList.add('hidden');
