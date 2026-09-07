@@ -1877,6 +1877,63 @@ function drawInventory(){
 }
 function drawHUD(){
   const pad = 10;
+  const p = G.player;
+  const mobile = isTouchDevice();
+
+  if (mobile) {
+    const mw = 186, mh = 66;
+    ctx.fillStyle = 'rgba(0,0,0,0.65)';
+    ctx.fillRect(pad, pad, mw, mh);
+    ctx.strokeStyle = 'rgba(124,252,0,0.35)';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(pad, pad, mw, mh);
+
+    // Row 1: Nivel y Oro
+    ctx.font = '11px "Consolas", monospace';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'top';
+    ctx.fillStyle = '#7CFC00';
+    ctx.fillText('NV.' + G.level, pad + 8, pad + 6);
+    ctx.fillStyle = '#ffd740';
+    ctx.fillText('🪙 ' + (p.gold || 0), pad + 56, pad + 6);
+    if (G.killSpurtMult > 1.15) {
+      ctx.fillStyle = '#ff5722';
+      ctx.fillText('🔥x' + G.killSpurtMult.toFixed(1), pad + 130, pad + 6);
+    }
+
+    // Row 2: Vida
+    const bw = mw - 16, bh = 11;
+    const hpy = pad + 24;
+    ctx.fillStyle = '#222';
+    ctx.fillRect(pad + 8, hpy, bw, bh);
+    const hpr = clamp(p.hp / p.maxHP, 0, 1);
+    ctx.fillStyle = hpr > 0.3 ? '#4caf50' : '#ef5350';
+    ctx.fillRect(pad + 8, hpy, bw * hpr, bh);
+    ctx.strokeStyle = 'rgba(255,255,255,0.25)';
+    ctx.strokeRect(pad + 8, hpy, bw, bh);
+    ctx.fillStyle = '#fff';
+    ctx.font = '9px "Consolas", monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText(Math.ceil(p.hp) + ' / ' + p.maxHP, pad + 8 + bw / 2, hpy + 1);
+
+    // Row 3: XP
+    const xpy = pad + 42;
+    ctx.fillStyle = '#222';
+    ctx.fillRect(pad + 8, xpy, bw, 8);
+    const needed = xpNeeded();
+    const xpr = clamp(p.xp / needed, 0, 1);
+    ctx.fillStyle = '#9c27b0';
+    ctx.fillRect(pad + 8, xpy, bw * xpr, 8);
+    ctx.strokeStyle = 'rgba(255,255,255,0.2)';
+    ctx.strokeRect(pad + 8, xpy, bw, 8);
+    ctx.fillStyle = '#e1bee7';
+    ctx.fillText('XP ' + p.xp + ' / ' + needed, pad + 8 + bw / 2, xpy - 1);
+
+    ctx.textAlign = 'left';
+    drawInventory();
+    return;
+  }
+
   ctx.font = '12px "Consolas", monospace';
   ctx.textAlign = 'left';
   ctx.textBaseline = 'top';
@@ -1905,7 +1962,6 @@ function drawHUD(){
   ctx.fillRect(pad+8, pad+84, 132*gx, 8);
   const bw = 200, bh = 12;
   const bx = pad, by = G.vh - pad - bh*2 - 10;
-  const p = G.player;
   ctx.fillStyle = 'rgba(0,0,0,0.6)';
   ctx.fillRect(bx-3, by-3, bw+6, 34);
   ctx.fillStyle = '#222';
