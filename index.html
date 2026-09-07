@@ -453,6 +453,7 @@ const G = { vw:0, vh:0, camX:0, camY:0, time:0, level:1, kills:0, over:false, le
             weaponSelect:true, enemyLimit:12, particlesOn:true, spawnTimer:0.8, nextBossTime:80, shake:0, dmgOverlay:0, pendingCards:[],
             pendingLevels:0, warnings:[], portal:{ active:false, x:0, y:0, timer:0 },
             noEnemyLimit:false, swarmWarningTimer:0, lastMinute:0, paused:false,
+            recentKillsWindow:0, recentKillTimer:0, killRate:0, killSpurtMult:1.0,
             chests:[], chestCost:25, chestsOpened:0, chestDifficultyMult:1.0, lastChestMinute:0, difficultyWarningTimer:0,
             player:{ weapons:[], echoCount:0, orbSpheres:[], orbAngle:0, gold:0, moldyCheese:0, burgir:0, wiseOldMan:0 }, bullets:{}, enemies:{}, gems:{}, pdfs:{}, particles:{}, dmgTexts:{} };
 
@@ -764,8 +765,13 @@ function spawnTick(dt){
   const active = countActive(G.enemies);
   G.spawnTimer -= dt;
   if (G.spawnTimer <= 0){
-    G.spawnTimer = Math.max(0.14, 0.75 - G.time/120*0.5) * (0.9 + Math.random()*0.2);
-    if (G.noEnemyLimit || active < G.enemyLimit) spawnEnemy();
+    const speedMult = Math.max(0.35, 1.0 / (G.killSpurtMult || 1.0));
+    G.spawnTimer = Math.max(0.08, (0.75 - G.time/120*0.5) * speedMult) * (0.9 + Math.random()*0.2);
+    const spawnCount = ((G.killSpurtMult || 1.0) > 1.5 && Math.random() < 0.6) ? 2 : 1;
+    for (let s = 0; s < spawnCount; s++) {
+      const curActive = countActive(G.enemies);
+      if (G.noEnemyLimit || curActive < G.enemyLimit) spawnEnemy();
+    }
   }
   if (G.time >= G.nextBossTime && G.level >= 4 && !G.portal.active && active < G.enemyLimit + 8){
     const pX = clamp(Math.random() * (WORLD.w - 200) + 100, 100, WORLD.w - 100);
@@ -850,6 +856,7 @@ function damageEnemy(e, dmg, opts){
 function killEnemy(e){
   e.active = false;
   G.kills++;
+  G.recentKillsWindow = (G.recentKillsWindow || 0) + 1;
   burst(e.x, e.y, e.color, 12, 1.4);
   G.shake = Math.max(G.shake, e.behavior === 'boss' ? 8 : 2);
   
@@ -1400,7 +1407,8 @@ function updateParticles(dt){
   }
 }
 function baseTargetLimit(){
-  return Math.min(280, 12 + G.level*6 + Math.floor(G.time/20)*5);
+  const base = Math.min(280, 12 + G.level*6 + Math.floor(G.time/20)*5);
+  return Math.min(320, Math.floor(base * (G.killSpurtMult || 1.0)));
 }
 function adjustScaling(dt){
   const target = baseTargetLimit();
@@ -1416,6 +1424,23 @@ function update(dt){
   G.time += dt;
   if (G.shake > 0) G.shake = Math.max(0, G.shake - dt*30);
   if (G.dmgOverlay > 0) G.dmgOverlay = Math.max(0, G.dmgOverlay - dt*2.2);
+
+  G.recentKillTimer = (G.recentKillTimer || 0) + dt;
+  if (G.recentKillTimer >= 1.0) {
+    G.killRate = (G.recentKillsWindow || 0) / G.recentKillTimer;
+    G.recentKillsWindow = 0;
+    G.recentKillTimer = 0;
+    if (G.killRate > 2.2) {
+      const targetMult = Math.min(2.5, 1.0 + (G.killRate - 2.2) * 0.35);
+      const prevMult = G.killSpurtMult || 1.0;
+      G.killSpurtMult = Math.min(targetMult, prevMult + 0.25);
+      if (G.killSpurtMult >= 1.5 && prevMult < 1.5) {
+        toast('¡RÁPIDAS ELIMINACIONES! SPAWN ACELERADO 🔥');
+      }
+    } else {
+      G.killSpurtMult = Math.max(1.0, (G.killSpurtMult || 1.0) - 0.2);
+    }
+  }
   
   const currentMinute = Math.floor(G.time / 60);
   G.lastMinute = G.lastMinute || 0;
@@ -1510,6 +1535,7 @@ function resetGame(){
   G.pendingLevels = 0;
   G.swarmWarningTimer = 0;
   G.lastMinute = 0;
+  G.recentKillsWindow = 0; G.recentKillTimer = 0; G.killRate = 0; G.killSpurtMult = 1.0;
   G.noEnemyLimit = document.getElementById('no-limit-check').checked;
   G.paused = false;
   fpsEMA = 60;
@@ -1802,6 +1828,10 @@ function drawHUD(){
   ctx.fillText('Enemigos: '+countActive(G.enemies), pad+8, pad+38);
   ctx.fillText('Limite: ' + (G.noEnemyLimit ? 'SIN LÍMITE' : Math.round(G.enemyLimit)), pad+8, pad+54);
   ctx.fillText('Oro: $' + (G.player.gold || 0), pad+8, pad+70);
+  if (G.killSpurtMult > 1.15) {
+    ctx.fillStyle = '#ff5722';
+    ctx.fillText('🔥 x' + (G.killSpurtMult.toFixed(1)), pad+100, pad+6);
+  }
   ctx.fillStyle = G.particlesOn ? '#7CFC00' : '#666';
   ctx.fillText('FX: '+(G.particlesOn?'ON':'OFF'), pad+8, pad+86);
   ctx.fillStyle = '#333';
@@ -2022,6 +2052,7 @@ function startGameWithWeapon(){
   G.pendingLevels = 0;
   G.swarmWarningTimer = 0;
   G.lastMinute = 0;
+  G.recentKillsWindow = 0; G.recentKillTimer = 0; G.killRate = 0; G.killSpurtMult = 1.0;
   G.noEnemyLimit = document.getElementById('no-limit-check').checked;
   G.paused = false;
   document.getElementById('pausemenu').classList.add('hidden');
