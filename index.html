@@ -10,7 +10,7 @@
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{width:100%;height:100%;overflow:hidden;background:#0b0e14;font-family:Consolas,monospace;color:#e8e8e8}
 canvas{display:block;cursor:crosshair}
-.overlay{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(5,8,14,.78);z-index:10;user-select:none}
+.overlay{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(5,8,14,.82);z-index:10;user-select:none;overflow-y:auto;overflow-x:hidden;padding:16px;-webkit-overflow-scrolling:touch}
 .hidden{display:none!important}
 #levelup h2{font-size:28px;letter-spacing:4px;margin-bottom:24px;color:#7CFC00;text-shadow:0 0 14px rgba(124,252,0,.7)}
 #cards{display:flex;gap:24px}
@@ -173,8 +173,8 @@ button#restart:hover{background:#2c4a2c;box-shadow:0 0 18px rgba(124,252,0,.5)}
     }
     #joystick-stick {
       position: absolute;
-      top: 38px;
-      left: 38px;
+      top: calc(50% - 24px);
+      left: calc(50% - 24px);
       width: 48px;
       height: 48px;
       border-radius: 50%;
@@ -213,6 +213,145 @@ button#restart:hover{background:#2c4a2c;box-shadow:0 0 18px rgba(124,252,0,.5)}
       #wcards { flex-wrap: wrap; justify-content: center; max-height: 65vh; overflow-y: auto; }
       .card { width: 150px; padding: 12px 8px; }
       .card .icon { font-size: 32px; margin: 6px 0; }
+    }
+
+    /* Celulares en horizontal (Landscape) y pantallas de baja altura */
+    @media (max-height: 520px) {
+      .overlay {
+        justify-content: flex-start !important;
+        padding: 10px 14px 28px !important;
+      }
+      #mainmenu h1 {
+        font-size: 26px !important;
+        margin-bottom: 8px !important;
+        letter-spacing: 3px !important;
+      }
+      #mainmenu > div:last-child {
+        position: static !important;
+        margin-top: 10px !important;
+      }
+      #menu-buttons {
+        gap: 6px !important;
+        width: 240px !important;
+        max-width: 90vw !important;
+      }
+      .menu-btn {
+        padding: 7px 10px !important;
+        font-size: 11px !important;
+        letter-spacing: 1px !important;
+      }
+      .mode-btn {
+        padding: 8px 10px !important;
+      }
+      .mode-btn .mname {
+        font-size: 12px !important;
+      }
+      .mode-btn .mdesc {
+        font-size: 9px !important;
+      }
+      #tutorial-panel {
+        width: 96vw !important;
+        max-width: 600px !important;
+        max-height: 86vh !important;
+        padding: 10px 14px !important;
+      }
+      #scores-panel {
+        width: 96vw !important;
+        max-width: 520px !important;
+      }
+      #scores-list {
+        max-height: 140px !important;
+      }
+      #gameover h2 {
+        font-size: 26px !important;
+        margin-bottom: 6px !important;
+      }
+      #stats {
+        font-size: 11px !important;
+        line-height: 1.4 !important;
+        margin-bottom: 8px !important;
+      }
+      #score-register-box {
+        margin-bottom: 8px !important;
+        padding: 8px !important;
+        width: 280px !important;
+        max-width: 90vw !important;
+      }
+      #cards, #wcards {
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        overflow-x: auto !important;
+        overflow-y: hidden !important;
+        max-height: 65vh !important;
+        max-width: 96vw !important;
+        justify-content: flex-start !important;
+        padding: 4px 8px !important;
+      }
+      .card {
+        width: 130px !important;
+        padding: 8px 6px !important;
+        flex-shrink: 0 !important;
+      }
+      .card .icon {
+        font-size: 24px !important;
+        margin: 4px 0 !important;
+      }
+      .card .pname {
+        font-size: 12px !important;
+        margin-bottom: 2px !important;
+      }
+      .card .pdesc {
+        font-size: 9px !important;
+        min-height: 22px !important;
+        line-height: 1.2 !important;
+      }
+      .card .pval {
+        font-size: 13px !important;
+        margin-top: 4px !important;
+      }
+    }
+
+    /* Joystick ergonómico en celular horizontal */
+    @media (orientation: landscape) and (max-height: 520px) {
+      .is-touch #mobile-joystick {
+        left: 36px !important;
+        bottom: 14px !important;
+        transform: none !important;
+        width: 104px !important;
+        height: 104px !important;
+      }
+      .is-touch #mobile-pause-btn {
+        top: 10px !important;
+        right: 12px !important;
+        width: 36px !important;
+        height: 36px !important;
+        font-size: 15px !important;
+      }
+    }
+
+    /* Celulares plegables cerrados / pantallas ultra estrechas */
+    @media (max-width: 340px) {
+      #mainmenu h1 {
+        font-size: 32px !important;
+        letter-spacing: 3px !important;
+      }
+      #menu-buttons, #unlocks-panel, #scores-panel, #tutorial-panel, #score-register-box, #modepicker > div, #gameover > div {
+        width: 100% !important;
+        max-width: 94vw !important;
+      }
+      .card {
+        width: 120px !important;
+        padding: 8px 6px !important;
+      }
+      .card .icon {
+        font-size: 22px !important;
+      }
+      .card .pname {
+        font-size: 11px !important;
+      }
+      .card .pdesc {
+        font-size: 9px !important;
+      }
     }
 </style>
 </head>
@@ -2354,7 +2493,7 @@ function setupMobileJoystick() {
     let dx = clientX - centerX;
     let dy = clientY - centerY;
     const dist = Math.hypot(dx, dy);
-    const maxR = (G.joystick && G.joystick.maxR) || 40;
+    const maxR = (rect.width * 0.35) || (G.joystick && G.joystick.maxR) || 40;
     if (dist > maxR && dist > 0) {
       dx = (dx / dist) * maxR;
       dy = (dy / dist) * maxR;
