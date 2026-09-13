@@ -226,6 +226,7 @@ button#restart:hover{background:#2c4a2c;box-shadow:0 0 18px rgba(124,252,0,.5)}
   
   <div id="menu-buttons" style="display:flex; flex-direction:column; gap:12px; width:260px;">
     <button class="menu-btn" onclick="showModePicker()">JUGAR</button>
+    <button class="menu-btn" onclick="showTutorial()">TUTORIAL Y GUÍA</button>
     <button class="menu-btn" onclick="showUnlocks()">DESBLOQUEOS Y TIENDA</button>
     <button class="menu-btn" onclick="showScores()">TABLAS</button>
     <button class="menu-btn" onclick="showSaveCodePrompt()">🔑 CÓDIGO DE GUARDADO</button>
@@ -233,6 +234,95 @@ button#restart:hover{background:#2c4a2c;box-shadow:0 0 18px rgba(124,252,0,.5)}
       <input type="checkbox" id="no-limit-check" style="cursor:pointer; accent-color:#7CFC00;">
       <label for="no-limit-check" style="cursor:pointer; user-select:none;">Modo Sin Límite de Enemigos</label>
     </div>
+  </div>
+
+  <div id="tutorial-panel" class="hidden" style="text-align:left; width: 440px; max-width: 94vw; max-height: 80vh; overflow-y: auto; background: rgba(15,20,30,0.96); border: 2px solid #7CFC00; border-radius: 10px; padding: 18px; box-shadow: 0 0 24px rgba(0,0,0,0.9); font-size: 11px; line-height: 1.5;">
+    <h3 style="color:#7CFC00; margin-bottom:12px; letter-spacing:2px; text-align:center; font-size:16px;">GUÍA Y TUTORIAL</h3>
+
+    <div style="margin-bottom:14px; border-bottom:1px solid #333; padding-bottom:10px;">
+      <div style="color:#7CFC00; font-weight:bold; margin-bottom:4px; font-size:12px;">🕹️ ¿CÓMO SE JUEGA?</div>
+      <p style="color:#ccc; margin-bottom:6px;">• <b>Movimiento:</b> Teclas <b>W, A, S, D</b> o <b>Flechas</b> (o joystick virtual en pantalla táctil).</p>
+      <p style="color:#ccc; margin-bottom:6px;">• <b>Disparo:</b> Tu personaje apunta y dispara <b>automáticamente</b> al enemigo más cercano.</p>
+      <p style="color:#ccc; margin-bottom:6px;">• <b>Supervivencia:</b> Esquivá oleadas crecientes, subí de nivel recogiendo experiencia y elegí sabiamente tus mejoras.</p>
+      <p style="color:#ccc;">• <b>Puntuación (Score):</b> Se mide estrictamente por la cantidad de <b>monstruos eliminados (Kills)</b>.</p>
+    </div>
+
+    <div style="margin-bottom:14px; border-bottom:1px solid #333; padding-bottom:10px;">
+      <div style="color:#7CFC00; font-weight:bold; margin-bottom:8px; font-size:12px;">👀 GUÍA VISUAL: ¡NO CONFUNDAS LOS ELEMENTOS!</div>
+      
+      <div style="display:flex; align-items:flex-start; gap:10px; margin-bottom:8px; background:rgba(0,229,255,0.06); border:1px solid rgba(0,229,255,0.3); border-radius:6px; padding:6px 8px;">
+        <span style="font-size:18px;">💎</span>
+        <div>
+          <b style="color:#00E5FF;">PUNTOS DE EXPERIENCIA (XP):</b>
+          <div style="color:#bbb; font-size:10px;">Son <b>diamantes/cristales facetados y brillantes</b> (Azul cian, Verde esmeralda o Magenta). <b>NO TE HACEN DAÑO</b>: pasá sobre ellos para recogerlos y subir de nivel.</div>
+        </div>
+      </div>
+
+      <div style="display:flex; align-items:flex-start; gap:10px; margin-bottom:8px; background:rgba(255,215,0,0.06); border:1px solid rgba(255,215,0,0.3); border-radius:6px; padding:6px 8px;">
+        <span style="font-size:18px;">🪙</span>
+        <div>
+          <b style="color:#FFD700;">MONEDAS DE PLATA ($):</b>
+          <div style="color:#bbb; font-size:10px;">Círculos dorados con el signo $. Se guardan en tu cuenta permanente y sirven para comprar y desbloquear armas en la Tienda.</div>
+        </div>
+      </div>
+
+      <div style="display:flex; align-items:flex-start; gap:10px; margin-bottom:8px; background:rgba(224,169,109,0.06); border:1px solid rgba(224,169,109,0.3); border-radius:6px; padding:6px 8px;">
+        <span style="font-size:18px;">🍔</span>
+        <div>
+          <b style="color:#E0A96D;">HAMBURGUESA (BURGIR):</b>
+          <div style="color:#bbb; font-size:10px;">Comida con capas visibles. ¡Restaura puntos de vida (HP) de manera instantánea!</div>
+        </div>
+      </div>
+
+      <div style="display:flex; align-items:flex-start; gap:10px; margin-bottom:8px; background:rgba(124,252,0,0.06); border:1px solid rgba(124,252,0,0.3); border-radius:6px; padding:6px 8px;">
+        <span style="font-size:18px;">📄</span>
+        <div>
+          <b style="color:#7CFC00;">DOCUMENTOS PDF (MEJORAS):</b>
+          <div style="color:#bbb; font-size:10px;">Ítems rectangulares que caen de jefes o cofres. Otorgan mejoras pasivas acumulables para potenciar tus armas y atributos.</div>
+        </div>
+      </div>
+
+      <div style="display:flex; align-items:flex-start; gap:10px; background:rgba(255,60,60,0.12); border:1px solid rgba(255,60,60,0.5); border-radius:6px; padding:6px 8px;">
+        <span style="font-size:18px;">👾</span>
+        <div>
+          <b style="color:#ff5252;">MONSTRUOS Y ENEMIGOS:</b>
+          <div style="color:#bbb; font-size:10px;">Círculos orgánicos con <b>ojos hostiles</b> y colores amenazantes (carmesí, óxido, violeta oscuro, gris plomo). <b>¡HACEN DAÑO AL CONTACTO!</b> Nunca te acerques a ellos pensando que son gemas.</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-bottom:14px;">
+      <div style="color:#7CFC00; font-weight:bold; margin-bottom:8px; font-size:12px;">🏆 TIERLIST DE MEJORAS DE PDF (De mejor a normal)</div>
+      
+      <div style="display:flex; flex-direction:column; gap:6px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,61,127,0.12); border:1px solid #FF3D7F; border-radius:5px; padding:5px 8px;">
+          <div><b style="color:#FF3D7F;">👑 TIER S · BONK</b> <span style="color:#fff; font-size:10px;">(Rosa Neón)</span></div>
+          <div style="color:#FF3D7F; font-weight:bold; font-size:10px;">Mult x6.0 <span style="color:#aaa; font-weight:normal;">[2% prob.]</span></div>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,152,0,0.12); border:1px solid #FF9800; border-radius:5px; padding:5px 8px;">
+          <div><b style="color:#FF9800;">⚡ TIER A · ÉPICO</b> <span style="color:#fff; font-size:10px;">(Naranja)</span></div>
+          <div style="color:#FF9800; font-weight:bold; font-size:10px;">Mult x3.5 <span style="color:#aaa; font-weight:normal;">[6% prob.]</span></div>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(171,71,188,0.12); border:1px solid #AB47BC; border-radius:5px; padding:5px 8px;">
+          <div><b style="color:#AB47BC;">🔮 TIER B · ULTRA</b> <span style="color:#fff; font-size:10px;">(Violeta)</span></div>
+          <div style="color:#AB47BC; font-weight:bold; font-size:10px;">Mult x2.2 <span style="color:#aaa; font-weight:normal;">[12% prob.]</span></div>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(66,165,245,0.12); border:1px solid #42A5F5; border-radius:5px; padding:5px 8px;">
+          <div><b style="color:#42A5F5;">🔷 TIER C · MEJORADO</b> <span style="color:#fff; font-size:10px;">(Celeste)</span></div>
+          <div style="color:#42A5F5; font-weight:bold; font-size:10px;">Mult x1.5 <span style="color:#aaa; font-weight:normal;">[30% prob.]</span></div>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(158,158,158,0.12); border:1px solid #9E9E9E; border-radius:5px; padding:5px 8px;">
+          <div><b style="color:#BDBDBD;">⚪ TIER D · COMÚN / NORMAL</b> <span style="color:#fff; font-size:10px;">(Gris)</span></div>
+          <div style="color:#BDBDBD; font-weight:bold; font-size:10px;">Mult x1.0 <span style="color:#aaa; font-weight:normal;">[50% prob.]</span></div>
+        </div>
+      </div>
+    </div>
+
+    <button class="menu-btn" style="width:100%; font-size:12px; padding:10px;" onclick="hidePanels()">VOLVER AL MENÚ</button>
   </div>
   
   <div id="unlocks-panel" class="hidden" style="text-align:center; width: 360px;">
@@ -245,8 +335,13 @@ button#restart:hover{background:#2c4a2c;box-shadow:0 0 18px rgba(124,252,0,.5)}
     </div>
   </div>
   
-  <div id="scores-panel" class="hidden" style="text-align:center; width: 340px;">
-    <h3 style="color:#7CFC00; margin-bottom:12px; letter-spacing: 2px;">MEJORES RUNS</h3>
+  <div id="scores-panel" class="hidden" style="text-align:center; width: 380px; max-width: 95vw;">
+    <h3 style="color:#7CFC00; margin-bottom:8px; letter-spacing: 2px;">TABLA DE RÉCORDS (KILLS)</h3>
+    <div style="display:flex; gap:6px; margin-bottom:10px; justify-content:center;">
+      <button id="tab-score-day" class="menu-btn" style="flex:1; padding:6px 4px; font-size:10px; border-color:#7CFC00;" onclick="switchScoresTab('day')">HOY (DÍA)</button>
+      <button id="tab-score-week" class="menu-btn" style="flex:1; padding:6px 4px; font-size:10px; border-color:#444; color:#aaa; background:transparent;" onclick="switchScoresTab('week')">ESTA SEMANA</button>
+      <button id="tab-score-all" class="menu-btn" style="flex:1; padding:6px 4px; font-size:10px; border-color:#444; color:#aaa; background:transparent;" onclick="switchScoresTab('all')">HISTÓRICO</button>
+    </div>
     <div id="scores-list" style="max-height: 220px; overflow-y: auto; background:rgba(0,0,0,0.3); border:1px solid #333; border-radius:6px; padding:8px; margin-bottom:16px; font-size:11px; text-align:left;">
     </div>
     <button class="menu-btn" onclick="hidePanels()">VOLVER</button>
@@ -291,7 +386,13 @@ button#restart:hover{background:#2c4a2c;box-shadow:0 0 18px rgba(124,252,0,.5)}
 <div id="gameover" class="overlay hidden">
   <h2>GAME OVER</h2>
   <div id="stats"></div>
-  <div style="display:flex; gap:16px; width:280px;">
+  <div id="score-register-box" style="margin-bottom:18px; background:rgba(15,20,30,0.92); border:1px solid #7CFC00; border-radius:8px; padding:12px; width:300px; text-align:center;">
+    <div style="font-size:12px; color:#7CFC00; font-weight:bold; margin-bottom:6px; letter-spacing:1px;">REGISTRAR SCORE: <span id="gameover-kills-val" style="color:#fff;">0</span> KILLS</div>
+    <input type="text" id="player-name-input" maxlength="15" placeholder="Ingresá tu nombre..." style="width:100%; padding:8px 10px; background:#0b0e14; border:1px solid #555; border-radius:6px; color:#fff; font-family:inherit; font-size:12px; text-align:center; margin-bottom:8px; outline:none;">
+    <button id="save-score-btn" class="menu-btn" style="padding:8px 16px; font-size:12px; width:100%;" onclick="savePlayerScore()">GUARDAR EN TABLA</button>
+    <div id="score-saved-msg" style="font-size:11px; color:#7CFC00; margin-top:6px; display:none;">¡Récord guardado con éxito!</div>
+  </div>
+  <div style="display:flex; gap:16px; width:300px;">
     <button id="restart" style="flex:1;">REINICIAR</button>
     <button id="goToMenu" class="menu-btn" style="flex:1; padding:14px 20px; font-size:18px;">MENÚ</button>
   </div>
@@ -385,22 +486,22 @@ const PDFS = {
 };
 
 const ENEMY_TYPES = [
-  { id:'worm',      name:'Gusano',        color:'#7BC67E', hp:20, spd:55,  dmg:6,  r:13, minLv:0, xp:10, behavior:'basic' },
-  { id:'parasite',  name:'Parasito',      color:'#9ACD32', hp:30, spd:80,  dmg:4,  r:14, minLv:2, xp:15, behavior:'parasite' },
-  { id:'runner',    name:'Rapido',        color:'#FF8C00', hp:10, spd:130, dmg:5,  r:11, minLv:3, xp:12, behavior:'zigzag' },
-  { id:'explosive', name:'Explosivo',     color:'#DC143C', hp:25, spd:60,  dmg:20, r:14, minLv:4, xp:20, behavior:'explode' },
-  { id:'tank',      name:'Tanque',        color:'#8D8D8D', hp:85, spd:38,  dmg:14, r:22, minLv:5, xp:30, behavior:'basic' },
-  { id:'sniper',    name:'Francotirador', color:'#FF00FF', hp:16, spd:40,  dmg:10, r:12, minLv:6, xp:25, behavior:'sniper' },
-  { id:'ghost',     name:'Fantasma',      color:'#E8E8E8', hp:13, spd:115, dmg:9,  r:13, minLv:7, xp:18, behavior:'ghost' },
-  { id:'bombwalk',  name:'Bomba Andante', color:'#FFA726', hp:50, spd:30,  dmg:35, r:16, minLv:3, xp:22, behavior:'bombwalk' },
-  { id:'sorcerer',  name:'Hechicero',     color:'#CE93D8', hp:22, spd:55,  dmg:8,  r:14, minLv:5, xp:28, behavior:'sorcerer' },
-  { id:'diver',     name:'Buceador',      color:'#26C6DA', hp:28, spd:100, dmg:7,  r:13, minLv:4, xp:18, behavior:'diver' },
-  { id:'sentinel',  name:'Centinela',     color:'#78909C', hp:60, spd:1,   dmg:18, r:24, minLv:6, xp:40, behavior:'sentinel' },
-  { id:'blinker',   name:'Parpadeante',   color:'#FFAB91', hp:14, spd:0,   dmg:11, r:12, minLv:7, xp:20, behavior:'blinker' },
-  { id:'mimic',     name:'Mimetico',      color:'#A7FFEB', hp:18, spd:80,  dmg:10, r:13, minLv:5, xp:32, behavior:'mimic' },
-  { id:'bonksup',   name:'BONK Supremo',  color:'#FF3D7F', hp:180,spd:52,  dmg:18, r:22, minLv:9, xp:120, behavior:'bonksup' },
-  { id:'boss',      name:'PDF-Oculto',    color:'#B71C1C', hp:320,spd:48,  dmg:25, r:30, minLv:8, xp:200, behavior:'boss' },
-  { id:'minion',    name:'Gusano Menor',  color:'#A5D6A7', hp:5,  spd:150, dmg:2,  r:8,  minLv:99,xp:3,  behavior:'basic' },
+  { id:'worm',      name:'Gusano',        color:'#C62828', hp:20, spd:55,  dmg:6,  r:13, minLv:0, xp:10, behavior:'basic' },
+  { id:'parasite',  name:'Parasito',      color:'#D84315', hp:30, spd:80,  dmg:4,  r:14, minLv:2, xp:15, behavior:'parasite' },
+  { id:'runner',    name:'Rapido',        color:'#E65100', hp:10, spd:130, dmg:5,  r:11, minLv:3, xp:12, behavior:'zigzag' },
+  { id:'explosive', name:'Explosivo',     color:'#B71C1C', hp:25, spd:60,  dmg:20, r:14, minLv:4, xp:20, behavior:'explode' },
+  { id:'tank',      name:'Tanque',        color:'#546E7A', hp:85, spd:38,  dmg:14, r:22, minLv:5, xp:30, behavior:'basic' },
+  { id:'sniper',    name:'Francotirador', color:'#880E4F', hp:16, spd:40,  dmg:10, r:12, minLv:6, xp:25, behavior:'sniper' },
+  { id:'ghost',     name:'Fantasma',      color:'#CFD8DC', hp:13, spd:115, dmg:9,  r:13, minLv:7, xp:18, behavior:'ghost' },
+  { id:'bombwalk',  name:'Bomba Andante', color:'#BF360C', hp:50, spd:30,  dmg:35, r:16, minLv:3, xp:22, behavior:'bombwalk' },
+  { id:'sorcerer',  name:'Hechicero',     color:'#4A148C', hp:22, spd:55,  dmg:8,  r:14, minLv:5, xp:28, behavior:'sorcerer' },
+  { id:'diver',     name:'Buceador',      color:'#311B92', hp:28, spd:100, dmg:7,  r:13, minLv:4, xp:18, behavior:'diver' },
+  { id:'sentinel',  name:'Centinela',     color:'#37474F', hp:60, spd:1,   dmg:18, r:24, minLv:6, xp:40, behavior:'sentinel' },
+  { id:'blinker',   name:'Parpadeante',   color:'#AD1457', hp:14, spd:0,   dmg:11, r:12, minLv:7, xp:20, behavior:'blinker' },
+  { id:'mimic',     name:'Mimetico',      color:'#6A1B9A', hp:18, spd:80,  dmg:10, r:13, minLv:5, xp:32, behavior:'mimic' },
+  { id:'bonksup',   name:'BONK Supremo',  color:'#880000', hp:180,spd:52,  dmg:18, r:22, minLv:9, xp:120, behavior:'bonksup' },
+  { id:'boss',      name:'PDF-Oculto',    color:'#4A0000', hp:320,spd:48,  dmg:25, r:30, minLv:8, xp:200, behavior:'boss' },
+  { id:'minion',    name:'Gusano Menor',  color:'#EF5350', hp:5,  spd:150, dmg:2,  r:8,  minLv:99,xp:3,  behavior:'basic' },
 ];
 
 // ============ ARMAS ============
@@ -1557,25 +1658,84 @@ function gameOver(){
   document.getElementById('stats').innerHTML =
     '<div>Tiempo: '+fmtTime(G.time)+'</div>' +
     '<div>Nivel alcanzado: '+G.level+'</div>' +
-    '<div>Enemigos eliminados: '+G.kills+'</div>' +
+    '<div>Enemigos eliminados (Score): <b style="color:#7CFC00;">'+G.kills+'</b></div>' +
     '<div>Monedas recolectadas: 🪙 '+(G.player.gold || 0)+' (Total: 🪙 '+getGlobalCoins()+')</div>' +
     '<div>PDFs equipados: '+G.player.inventory.length+'</div>';
+
+  const killsDisplay = document.getElementById('gameover-kills-val');
+  if (killsDisplay) killsDisplay.textContent = G.kills;
+
+  const nameInput = document.getElementById('player-name-input');
+  if (nameInput) {
+    nameInput.value = localStorage.getItem('microbonk_player_name') || '';
+  }
+  const saveBtn = document.getElementById('save-score-btn');
+  if (saveBtn) {
+    saveBtn.disabled = false;
+    saveBtn.textContent = 'GUARDAR EN TABLA';
+  }
+  const savedMsg = document.getElementById('score-saved-msg');
+  if (savedMsg) savedMsg.style.display = 'none';
+
+  const weaponNames = G.player.weapons.map(function(w){ return WEAPONS[w.id].name; }).join(' y ') || 'Ninguna';
+  G._lastRunData = {
+    kills: G.kills,
+    level: G.level,
+    time: fmtTime(G.time),
+    weapon: weaponNames,
+    mode: G.mode === 'classic' ? 'Clásico' : (G.mode === 'frenzy' ? 'Frenesí' : 'Extremo'),
+    timestamp: Date.now()
+  };
+
   document.getElementById('gameover').classList.remove('hidden');
+}
+
+function savePlayerScore(){
+  if (!G._lastRunData) return;
+  const input = document.getElementById('player-name-input');
+  const btn = document.getElementById('save-score-btn');
+  const msg = document.getElementById('score-saved-msg');
+  if (btn && btn.disabled) return;
+
+  const rawName = input && input.value ? input.value.trim() : '';
+  const playerName = rawName || 'Anónimo';
+
   try {
-    const scores = JSON.parse(localStorage.getItem('microbonk_scores') || '[]');
-    const weaponNames = G.player.weapons.map(function(w){ return WEAPONS[w.id].name; }).join(' y ');
-    const newScore = {
-      date: new Date().toLocaleDateString(),
-      time: fmtTime(G.time),
-      level: G.level,
-      kills: G.kills,
-      weapon: weaponNames || 'Ninguna',
-      mode: G.mode === 'classic' ? 'Clásico' : (G.mode === 'frenzy' ? 'Frenesí' : 'Extremo')
-    };
-    scores.push(newScore);
-    scores.sort(function(a, b){ return b.kills - a.kills; });
-    localStorage.setItem('microbonk_scores', JSON.stringify(scores.slice(0, 10)));
-  } catch(e) {}
+    localStorage.setItem('microbonk_player_name', playerName);
+    let records = [];
+    try {
+      records = JSON.parse(localStorage.getItem('microbonk_scores_records') || '[]');
+      if (!Array.isArray(records)) records = [];
+    } catch(e) { records = []; }
+
+    records.push({
+      name: playerName,
+      kills: G._lastRunData.kills,
+      level: G._lastRunData.level,
+      time: G._lastRunData.time,
+      weapon: G._lastRunData.weapon,
+      mode: G._lastRunData.mode,
+      timestamp: G._lastRunData.timestamp || Date.now()
+    });
+
+    records.sort(function(a, b){
+      if (b.kills !== a.kills) return b.kills - a.kills;
+      return (b.timestamp || 0) - (a.timestamp || 0);
+    });
+    if (records.length > 200) records = records.slice(0, 200);
+
+    localStorage.setItem('microbonk_scores_records', JSON.stringify(records));
+    localStorage.setItem('microbonk_scores', JSON.stringify(records.slice(0, 10)));
+
+    if (btn) {
+      btn.disabled = true;
+      btn.textContent = 'REGISTRADO ✔';
+    }
+    if (msg) msg.style.display = 'block';
+    toast('¡Récord de ' + playerName + ' guardado!');
+  } catch(e) {
+    toast('Error al guardar récord.');
+  }
 }
 function resetGame(){
   const p = G.player;
@@ -1701,6 +1861,29 @@ function drawEnemy(e){
   ctx.beginPath(); ctx.arc(x, y, e.r, 0, Math.PI*2); ctx.fill();
   ctx.strokeStyle = 'rgba(0,0,0,0.5)'; ctx.lineWidth = 2;
   ctx.stroke();
+
+  // Hostile eyes oriented towards player
+  if (e.r >= 7) {
+    const ang = Math.atan2(G.player.y - e.y, G.player.x - e.x);
+    const ed = e.r * 0.4;
+    const es = e.r * 0.35;
+    const ex = x + Math.cos(ang) * ed;
+    const ey = y + Math.sin(ang) * ed;
+    const px = -Math.sin(ang) * es;
+    const py = Math.cos(ang) * es;
+    const eyeR = Math.max(1.5, e.r * 0.18);
+    const pupilR = Math.max(1, e.r * 0.09);
+    ctx.fillStyle = '#FFFFFF';
+    ctx.beginPath();
+    ctx.arc(ex + px, ey + py, eyeR, 0, Math.PI*2);
+    ctx.arc(ex - px, ey - py, eyeR, 0, Math.PI*2);
+    ctx.fill();
+    ctx.fillStyle = '#111111';
+    ctx.beginPath();
+    ctx.arc(ex + px + Math.cos(ang)*0.6, ey + py + Math.sin(ang)*0.6, pupilR, 0, Math.PI*2);
+    ctx.arc(ex - px + Math.cos(ang)*0.6, ey - py + Math.sin(ang)*0.6, pupilR, 0, Math.PI*2);
+    ctx.fill();
+  }
   if (e.behavior === 'explosive'){
     const t = (Math.sin(G.time*8 + e.zig)*0.5 + 0.5);
     ctx.fillStyle = 'rgba(255,255,255,'+(0.35+0.65*t)+')';
@@ -1823,9 +2006,25 @@ function drawGems(){
       ctx.font = 'bold 8px "Consolas", monospace';
       ctx.fillText('$', x, y + 0.5);
     } else {
-      ctx.fillStyle = g.val >= 20 ? '#FF3D7F' : (g.val >= 10 ? '#00E676' : '#00E5FF');
+      const gemColor = g.val >= 20 ? '#E040FB' : (g.val >= 10 ? '#00E676' : '#00E5FF');
+      const gr = g.r * pulse;
+      ctx.fillStyle = gemColor;
       ctx.beginPath();
-      ctx.arc(x, y, g.r * pulse, 0, Math.PI*2);
+      ctx.moveTo(x, y - gr * 1.15);
+      ctx.lineTo(x + gr * 0.85, y);
+      ctx.lineTo(x, y + gr * 1.15);
+      ctx.lineTo(x - gr * 0.85, y);
+      ctx.closePath();
+      ctx.fill();
+
+      // Facet highlight for shiny diamond look
+      ctx.fillStyle = 'rgba(255,255,255,0.7)';
+      ctx.beginPath();
+      ctx.moveTo(x, y - gr * 0.85);
+      ctx.lineTo(x + gr * 0.35, y);
+      ctx.lineTo(x, y - gr * 0.1);
+      ctx.lineTo(x - gr * 0.35, y);
+      ctx.closePath();
       ctx.fill();
     }
   }
@@ -2086,6 +2285,12 @@ function loop(ts){
 
 // ============ INPUT ============
 window.addEventListener('keydown', function(e){
+  if (document.activeElement && document.activeElement.tagName === 'INPUT') {
+    if (e.code === 'Enter') {
+      savePlayerScore();
+    }
+    return;
+  }
   if (['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Space','Escape'].indexOf(e.code) >= 0) e.preventDefault();
   keys[e.code] = true;
   if (G.levelUp && !G.over){
@@ -2580,43 +2785,148 @@ function showSaveCodePrompt(){
     }
   }
 }
+function showTutorial(){
+  document.getElementById('menu-buttons').classList.add('hidden');
+  document.getElementById('tutorial-panel').classList.remove('hidden');
+}
+
 function hidePanels(){
+  const tut = document.getElementById('tutorial-panel');
+  if (tut) tut.classList.add('hidden');
   document.getElementById('unlocks-panel').classList.add('hidden');
   document.getElementById('scores-panel').classList.add('hidden');
   document.getElementById('menu-buttons').classList.remove('hidden');
 }
+
+let currentScoresTab = 'day';
+
+function isSameDay(ts, now) {
+  const d1 = new Date(ts);
+  const d2 = new Date(now);
+  return d1.getFullYear() === d2.getFullYear() &&
+         d1.getMonth() === d2.getMonth() &&
+         d1.getDate() === d2.getDate();
+}
+
+function isSameWeek(ts, now) {
+  const d1 = new Date(ts);
+  const d2 = new Date(now);
+  const day = (d2.getDay() + 6) % 7; // Lunes = 0, Domingo = 6
+  const monday = new Date(d2.getFullYear(), d2.getMonth(), d2.getDate() - day);
+  monday.setHours(0, 0, 0, 0);
+  const nextMonday = new Date(monday.getTime() + 7 * 24 * 60 * 60 * 1000);
+  return ts >= monday.getTime() && ts < nextMonday.getTime();
+}
+
+function switchScoresTab(tab){
+  currentScoresTab = tab;
+  const tabs = ['day', 'week', 'all'];
+  tabs.forEach(function(t){
+    const btn = document.getElementById('tab-score-' + t);
+    if (!btn) return;
+    if (t === tab) {
+      btn.style.borderColor = '#7CFC00';
+      btn.style.color = '#7CFC00';
+      btn.style.background = '#1c2b1c';
+    } else {
+      btn.style.borderColor = '#444';
+      btn.style.color = '#aaa';
+      btn.style.background = 'transparent';
+    }
+  });
+  renderScoresList();
+}
+
+function getStoredScores(){
+  try {
+    let records = JSON.parse(localStorage.getItem('microbonk_scores_records') || '[]');
+    if (Array.isArray(records) && records.length > 0) return records;
+    // Migrar scores existentes
+    const legacy = JSON.parse(localStorage.getItem('microbonk_scores') || '[]');
+    if (Array.isArray(legacy) && legacy.length > 0) {
+      records = legacy.map(function(s){
+        return {
+          name: s.name || 'Jugador',
+          kills: s.kills || 0,
+          level: s.level || 1,
+          time: s.time || '0:00',
+          mode: s.mode || 'Clásico',
+          weapon: s.weapon || 'Ninguna',
+          timestamp: s.timestamp || Date.now()
+        };
+      });
+      localStorage.setItem('microbonk_scores_records', JSON.stringify(records));
+      return records;
+    }
+  } catch(e) {}
+  return [];
+}
+
+function escapeHtml(str){
+  if (!str) return '';
+  return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function renderScoresList(){
+  const list = document.getElementById('scores-list');
+  if (!list) return;
+  const now = Date.now();
+  const allScores = getStoredScores();
+  let filtered = allScores.filter(function(s){
+    const ts = s.timestamp || 0;
+    if (currentScoresTab === 'day') return isSameDay(ts, now);
+    if (currentScoresTab === 'week') return isSameWeek(ts, now);
+    return true;
+  });
+
+  filtered.sort(function(a, b){
+    if (b.kills !== a.kills) return b.kills - a.kills;
+    if (b.level !== a.level) return b.level - a.level;
+    return (b.timestamp || 0) - (a.timestamp || 0);
+  });
+
+  if (filtered.length === 0) {
+    let periodText = currentScoresTab === 'day' ? 'del día de hoy' : (currentScoresTab === 'week' ? 'de esta semana' : 'registradas');
+    list.innerHTML = '<div style="text-align:center; padding:24px 10px; color:#777; line-height:1.5;">Sin partidas ' + periodText + '.<br><span style="color:#555; font-size:10px;">¡Jugá una partida y guardá tu récord!</span></div>';
+    return;
+  }
+
+  let html = '<table style="width:100%; border-collapse:collapse; font-size:10px;">';
+  html += '<tr style="border-bottom:1px solid #7CFC00; color:#7CFC00;">' +
+          '<th style="padding:4px 2px; text-align:center; width:22px;">#</th>' +
+          '<th style="padding:4px 4px; text-align:left;">Jugador</th>' +
+          '<th style="padding:4px 2px; text-align:center; color:#FF3D7F;">Kills</th>' +
+          '<th style="padding:4px 2px; text-align:center;">Nv.</th>' +
+          '<th style="padding:4px 4px; text-align:right;">Tiempo</th>' +
+          '</tr>';
+
+  filtered.slice(0, 30).forEach(function(s, idx){
+    const medal = idx === 0 ? '🥇' : (idx === 1 ? '🥈' : (idx === 2 ? '🥉' : (idx + 1)));
+    html += '<tr style="border-bottom:1px solid #222;">' +
+            '<td style="padding:5px 2px; text-align:center; color:#888;">' + medal + '</td>' +
+            '<td style="padding:5px 4px; font-weight:bold; color:#fff;">' + escapeHtml(s.name || 'Anónimo') + '<br><span style="color:#666; font-size:9px; font-weight:normal;">' + escapeHtml(s.mode) + ' · ' + escapeHtml(s.weapon) + '</span></td>' +
+            '<td style="padding:5px 2px; text-align:center; font-weight:bold; color:#7CFC00; font-size:12px;">' + s.kills + '</td>' +
+            '<td style="padding:5px 2px; text-align:center; color:#aaa;">' + s.level + '</td>' +
+            '<td style="padding:5px 4px; text-align:right; color:#888;">' + s.time + '</td>' +
+            '</tr>';
+  });
+  html += '</table>';
+  list.innerHTML = html;
+}
+
 function showScores(){
   document.getElementById('menu-buttons').classList.add('hidden');
   document.getElementById('scores-panel').classList.remove('hidden');
-  const list = document.getElementById('scores-list');
-  try {
-    const scores = JSON.parse(localStorage.getItem('microbonk_scores') || '[]');
-    if (scores.length === 0) {
-      list.innerHTML = '<div style="text-align:center; padding:20px; color:#666;">Sin partidas registradas</div>';
-    } else {
-      let html = '<table style="width:100%; border-collapse:collapse;">';
-      html += '<tr style="border-bottom:1px solid #7CFC00; color:#7CFC00;"><th style="padding:4px; text-align:left;">Modo</th><th style="padding:4px; text-align:center;">Kills</th><th style="padding:4px; text-align:center;">Lvl</th><th style="padding:4px; text-align:right;">Tiempo</th></tr>';
-      scores.forEach(function(s){
-        html += '<tr style="border-bottom:1px solid #222;">' +
-                '<td style="padding:6px 4px;">' + s.mode + '<br><span style="color:#666; font-size:9px;">' + s.weapon + '</span></td>' +
-                '<td style="padding:6px 4px; text-align:center; font-weight:bold; color:#7CFC00;">' + s.kills + '</td>' +
-                '<td style="padding:6px 4px; text-align:center;">' + s.level + '</td>' +
-                '<td style="padding:6px 4px; text-align:right; color:#aaa;">' + s.time + '</td>' +
-                '</tr>';
-      });
-      html += '</table>';
-      list.innerHTML = html;
-    }
-  } catch(e) {
-    list.innerHTML = '<div style="text-align:center; padding:20px; color:#ff5252;">Error al cargar tablas</div>';
-  }
+  switchScoresTab(currentScoresTab || 'day');
 }
+
 function showMainMenu(){
   document.getElementById('gameover').classList.add('hidden');
   document.getElementById('weaponpicker').classList.add('hidden');
   document.getElementById('modepicker').classList.add('hidden');
   document.getElementById('levelup').classList.add('hidden');
   document.getElementById('pausemenu').classList.add('hidden');
+  hidePanels();
   document.getElementById('toggle-stats-btn').style.display = 'none';
   document.getElementById('stats-panel').style.display = 'none';
   document.getElementById('toggle-debug-btn').style.display = 'none';
